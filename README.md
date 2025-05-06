@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## CSR, SSR, SSG, ISR 렌더링 방식 테스트
 
-## Getting Started
+- CSR(Client-Side Rendering)
 
-First, run the development server:
+  - SPA(Single Page Application)에서 주로 사용하고 있습니다.
+  - HTML 기본 문서는 전송되며, Javascript 로드시 데이터를 받아 화면에 렌더링하는 방식
+  - 장점은 페이지 전환이 빠르며, 서버 부하가 적고, 사용자 인터렉션에 강함
+  - 단점은 초기 로딩이 느리며, SEO에 최적화에 어려움이 있음
+  
+  ```
+  동작 순서
+    - 사용자가 브라우저 웹 사이트 접속
+    - 서버에서 HTML + JS 파일 전달
+    - 브라우저에서 JS를 실행하여 필요한 데이터를 받아옴
+    - 받아온 데이터를 기반으로 브라우저 UI 렌더
+  ```
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
+- SSR(Server-side Rendering)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+  - 페이지 요청시 완성된 HTML을 서버에서 생성하여 브라우저에 전송합니다.
+  - 장점은 초기 로딩 속도가 빠르며, SEO에 유리합니다.
+  - 단점은 페이지 요청마다 서버에서 렌더링을 하며, 부하가 많아집니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+  ```
+  동작 순서
+    - 사용자가 페이지를 요청합니다.
+    - 서버가 데이터를 조회하여 HTML을 생성
+    - HTML을 브라우저에 전달하며, 즉시 화면에 표시됩니다.
+  ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
+- SSG(static Site Generation)
 
-## Learn More
+  - 빌드 시전에 HTML을 미리 생성하고, 사용자 요청시 서버 및 CDN이 HTML을 전달하는 방식입니다.
+  - 사용자 요청시 서버 연산이 없으며, 이미 생성된 정적 HTML을 전달합니다.
+  - 장점은 빠른 응답 속도, 서버 부하가 없으며, SEO에 유리합니다.
+  - 단점은 실시간 데이터 반영이 어렵고, 데이터가 자주 변경되는 페이지에는 부적합 합니다.
 
-To learn more about Next.js, take a look at the following resources:
+  ```
+  동작 순서
+    - 배포전 서버가 API를 호출하여 데이터를 가져옵니다.
+    - 데이터 기반으로 HTML를 만들어 저장합니다.
+    - 사용자가 요청하면 정적 HTML을 전달합니다.
+  ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
+- ISR(Incremental Static Regeneration)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+  - SSG와 동일하게 정적 HTML을 생성합니다.
+  - 특정 시간(revalidate)이 지나면 해당 페이지를 다시 생성합니다.
+  - 사용자 요청이 있을 때만 갱신합니다.
+  - 장점은 초리 로딩이 빠르며, 최신 데이터 반영이 가능하고, 서버 부하가 적습니다.
+  - 단점은 백엔드 변경시 바로 변경되지 않습니다.
 
-## Deploy on Vercel
+  ```
+  동작 순서
+  - 사용자 페이지 요청시 정적 HTML을 전달합니다.
+  - 특정 시간이 지나면 다음 요청시 새로운 HTML을 생성합니다.
+  - 생성이 완료되면 이후 요청부터는 최신 HTML을 사용합니다.
+  ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
